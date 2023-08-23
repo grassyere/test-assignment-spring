@@ -1,0 +1,4 @@
+app:
+  target:
+    origin: VVO
+    destination: TLV
