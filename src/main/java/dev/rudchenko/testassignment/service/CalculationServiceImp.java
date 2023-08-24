@@ -27,16 +27,19 @@ public class CalculationServiceImp implements CalculationService {
         return resultDTO;
     }
 
-    private static Map<String, LocalTime> calculateMinFlightTimes(TicketsDTO ticketsDTO) {
+    private Map<String, LocalTime> calculateMinFlightTimes(TicketsDTO ticketsDTO) {
         Map<String, LocalTime> minFlightTimes = new HashMap<>();
-        ticketsDTO.getTickets().forEach(it -> calculateMinFlightTimeForTicket(it, minFlightTimes));
+        ticketsDTO.getTickets()
+                .stream()
+                .filter(it -> TARGET_ORIGIN.equals(it.getOrigin()) && TARGET_DESTINATION.equals(it.getDestination()))
+                .forEach(it -> calculateMinFlightTimeForTicket(it, minFlightTimes));
         return minFlightTimes;
     }
 
     private static void calculateMinFlightTimeForTicket(TicketsDTO.FlyDataDTO it,
                                                         Map<String, LocalTime> minFlightTimes) {
-        String carrier = it.getCarrier();
         LocalTime departureTime = it.getDepartureTime();
+        String carrier = it.getCarrier();
         LocalTime arrivalTime = it.getArrivalTime();
 
         long flightDurationSeconds = arrivalTime.toSecondOfDay() - departureTime.toSecondOfDay();
